@@ -1,5 +1,7 @@
 package cz.sinko.morosystems.facade.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -39,4 +41,20 @@ public interface UserMapper {
      * @return user
      */
     User toUser(final UserDto source);
+
+    /**
+     * Map list of Users to list of UserDtos.
+     *
+     * @param users list of users
+     * @return list of userDtos
+     */
+    List<UserDto> toUsers(List<User> users);
+
+    /**
+     * Map list of UserDtos to list of Users.
+     *
+     * @param userDtos list of userDtos
+     * @return list of users
+     */
+    List<User> toUserDtos(List<UserDto> userDtos);
 }
