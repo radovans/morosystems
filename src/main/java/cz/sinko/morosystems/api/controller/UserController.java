@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cz.sinko.morosystems.api.controller.mapper.UserApiMapper;
+import cz.sinko.morosystems.api.controller.request.UserCreateRequest;
+import cz.sinko.morosystems.api.controller.request.UserUpdateRequest;
+import cz.sinko.morosystems.api.controller.response.UserResponse;
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
 import cz.sinko.morosystems.facade.UserFacade;
-import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.repository.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,36 +42,76 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserFacade userFacade;
+    private final UserApiMapper userApiMapper;
 
+    /**
+     * Get user by id.
+     *
+     * @param id the id of the user
+     * @return the user
+     * @throws ResourceNotFoundException if user not found
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable final long id) throws ResourceNotFoundException {
+    public ResponseEntity<UserResponse> getUser(@PathVariable final long id) throws ResourceNotFoundException {
         log.info("Getting user with id: '{}'", id);
-        return ResponseEntity.ok(userFacade.getUser(id));
+        return ResponseEntity.ok(userApiMapper.toResponse(userFacade.getUser(id)));
     }
 
+    /**
+     * Get all users.
+     *
+     * @return the list of users
+     */
     @GetMapping
-    public ResponseEntity<List<UserDto>> getUsers() {
+    public ResponseEntity<List<UserResponse>> getUsers() {
         log.info("Getting all users");
-        return ResponseEntity.ok().body(userFacade.getUsers());
+        return ResponseEntity.ok().body(userApiMapper.toResponse(userFacade.getUsers()));
     }
 
+    /**
+     * Create new user.
+     *
+     * @param userCreateRequest the user create request
+     * @return the created user
+     */
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid final UserDto userDto) {
-        log.info("Creating new user: '{}'", userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(userFacade.createUser(userDto));
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid final UserCreateRequest userCreateRequest) {
+        log.info("Creating new user: '{}'", userCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userApiMapper.toResponse(userFacade.createUser(userApiMapper.fromRequest(userCreateRequest))));
     }
 
+    /**
+     * Delete user by id.
+     *
+     * @param loggedUser the logged user
+     * @param id the id of the user to delete
+     * @return void
+     * @throws ResourceNotFoundException if user not found
+     */
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable final long id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final User loggedUser, @PathVariable final long id) throws ResourceNotFoundException {
         log.info("Deleting user with id: '{}'", id);
         userFacade.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Update user by id.
+     *
+     * @param loggedUser the logged user
+     * @param id the id of the user to update
+     * @param userUpdateRequest the user update request
+     * @return the updated user
+     * @throws ResourceNotFoundException if user not found
+     */
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable final long id, @RequestBody @Valid final UserDto userDto)
+    public ResponseEntity<UserResponse> updateUser(@AuthenticationPrincipal final User loggedUser, @PathVariable final long id,
+            @RequestBody @Valid final UserUpdateRequest userUpdateRequest)
             throws ResourceNotFoundException {
-        log.info("Updating user with id: '{}', '{}'", id, userDto);
-        return ResponseEntity.ok().body(userFacade.updateUser(id, userDto));
+        log.info("Updating user with id: '{}', '{}'", id, userUpdateRequest);
+        return ResponseEntity.ok().body(userApiMapper.toResponse(userFacade.updateUser(loggedUser, id,
+                userApiMapper.fromRequest(userUpdateRequest))));
     }
 }

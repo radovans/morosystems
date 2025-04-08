@@ -1,20 +1,24 @@
-package cz.sinko.morosystems.facade.mapper;
+package cz.sinko.morosystems.service.mapper;
+
+import static cz.sinko.morosystems.configuration.Constants.ADMIN_ROLE;
 
 import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.repository.model.Role;
 import cz.sinko.morosystems.repository.model.User;
 
-
 /**
- * Mapper for User entity.
+ * Mapper between User and UserDto.
  *
  * @author Radovan Šinko
  */
-@Mapper()
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
     /**
@@ -32,7 +36,8 @@ public interface UserMapper {
      * @param source user
      * @return userDto
      */
-    UserDto toUserDto(final User source);
+    @Mapping(target = "admin", expression = "java(mapAuthoritiesToAdmin(source.getAuthorities()))")
+    UserDto toUserDto(User source);
 
     /**
      * Map UserDto to User
@@ -40,7 +45,8 @@ public interface UserMapper {
      * @param source userDto
      * @return user
      */
-    User toUser(final UserDto source);
+    @Mapping(target = "authorities", ignore = true)
+    User toUser(UserDto source);
 
     /**
      * Map list of Users to list of UserDtos.
@@ -57,4 +63,15 @@ public interface UserMapper {
      * @return list of users
      */
     List<User> toUserDtos(List<UserDto> userDtos);
+
+    /**
+     * Custom mapping to set the admin field in UserDto based on authorities.
+     *
+     * @param authorities set of roles
+     * @return true if ADMIN_ROLE is present, false otherwise
+     */
+    default boolean mapAuthoritiesToAdmin(Set<Role> authorities) {
+        return authorities != null && authorities.stream()
+                .anyMatch(role -> ADMIN_ROLE.equals(role.getAuthority()));
+    }
 }

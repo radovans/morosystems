@@ -16,6 +16,12 @@ public class ResourceNotFoundException extends Exception {
 
     private final String message;
 
+    /**
+     * Create ResourceNotFoundException with resourceName and message.
+     *
+     * @param resourceName name of the resource
+     * @param message      message
+     */
     public ResourceNotFoundException(final String resourceName, final String message) {
         this.resourceName = resourceName;
         this.message = message;
@@ -25,7 +31,7 @@ public class ResourceNotFoundException extends Exception {
      * Create ResourceNotFoundException with resourceName and message.
      *
      * @param resourceName name of the resource
-     * @param message message
+     * @param message      message
      * @return ResourceNotFoundException
      */
     public static ResourceNotFoundException createWith(final String resourceName, final String message) {

@@ -7,5 +7,5 @@ package cz.sinko.morosystems.api;
  */
 public abstract class ApiUris {
 
-	public static final String ROOT_URI_USERS = "users";
+    public static final String ROOT_URI_USERS = "users";
 }

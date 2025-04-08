@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
-import cz.sinko.morosystems.facade.dto.UserDto;
 import cz.sinko.morosystems.repository.model.User;
 
 /**
@@ -58,4 +57,3 @@ public interface UserService {
      */
     User updateUser(long id, User user) throws ResourceNotFoundException;
 }
-

@@ -4,7 +4,7 @@ import java.util.List;
 
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
 import cz.sinko.morosystems.facade.dto.UserDto;
-import cz.sinko.morosystems.facade.mapper.UserMapper;
+import cz.sinko.morosystems.repository.model.User;
 
 /**
  * Facade for User operations.
@@ -47,10 +47,11 @@ public interface UserFacade {
     /**
      * Update User by id.
      *
-     * @param id      User id
-     * @param userDto User DTO
+     * @param loggedUser User who is logged in
+     * @param id         User id
+     * @param userDto    User DTO
      * @return updated User DTO
      * @throws ResourceNotFoundException if User was not found
      */
-    UserDto updateUser(long id, UserDto userDto) throws ResourceNotFoundException;
+    UserDto updateUser(User loggedUser, long id, UserDto userDto) throws ResourceNotFoundException;
 }

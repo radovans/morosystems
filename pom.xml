@@ -28,9 +28,21 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+
         <flyway.version>11.6.0</flyway.version>
         <liquibase.version>4.31.1</liquibase.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <checkstyle.version>10.12.0</checkstyle.version>
+
+        <checkstyle.config.location>code-check/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.suppressions.location>code-check/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+        <checkstyle.excludes>**/generated/**/*</checkstyle.excludes>
+        <checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
+        <checkstyle.includeTestResources>true</checkstyle.includeTestResources>
     </properties>
     <dependencies>
         <dependency>
@@ -48,6 +60,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>
@@ -112,6 +128,11 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
 
             <!--        Flyway plugin for database migrations -->
             <plugin>
@@ -129,6 +150,53 @@
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
                     </locations>
+                </configuration>
+            </plugin>
+
+            <!-- Code quality -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <consoleOutput>true</consoleOutput>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                </configuration>
+                <dependencies>
+                    <!-- Enforce usage of newer checkstyle engine, the plugin uses 6.18 by default -->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Code coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>cz/sinko/morosystems/service/impl/**</include>
+                        <include>cz/sinko/morosystems/facade/impl/**</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
