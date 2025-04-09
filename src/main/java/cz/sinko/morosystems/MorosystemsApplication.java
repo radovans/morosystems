@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * @author Radovan Šinko
  */
+@SuppressWarnings("PMD")
 @SpringBootApplication
 public class MorosystemsApplication {
 

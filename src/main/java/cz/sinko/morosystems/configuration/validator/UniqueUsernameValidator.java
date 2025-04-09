@@ -27,11 +27,7 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
      */
     @Override
     public boolean isValid(final String username, final ConstraintValidatorContext context) {
-        if (username == null) {
-            return true;
-        }
-
-        return userRepository.findByUsername(username).isEmpty();
+        return username == null || userRepository.findByUsername(username).isEmpty();
     }
 
     /**
@@ -41,5 +37,6 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
      */
     @Override
     public void initialize(final UniqueUsername constraintAnnotation) {
+        // No initialization needed
     }
 }

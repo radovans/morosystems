@@ -13,5 +13,7 @@ class MorosystemsApplicationTests {
 
     @Test
     void contextLoads() {
+        // This test method is intentionally left empty.
+        // It is used to check if the Spring application context loads successfully.
     }
 }

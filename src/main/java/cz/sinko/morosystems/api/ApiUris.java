@@ -5,7 +5,14 @@ package cz.sinko.morosystems.api;
  *
  * @author Radovan Šinko
  */
-public abstract class ApiUris {
+public final class ApiUris {
+
+    /**
+     * Do not instantiate.
+     */
+    private ApiUris() {
+        // Prevent instantiation
+    }
 
     public static final String ROOT_URI_USERS = "users";
 }

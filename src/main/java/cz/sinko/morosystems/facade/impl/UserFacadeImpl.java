@@ -84,8 +84,8 @@ public class UserFacadeImpl implements UserFacade {
         log.info("Updating user with id: '{}', '{}'", id, userDto);
 
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final boolean hasUserRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(USER_ROLE));
-        final boolean hasAdminRole = authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals(ADMIN_ROLE));
+        final boolean hasUserRole = authentication.getAuthorities().stream().anyMatch(r -> USER_ROLE.equals(r.getAuthority()));
+        final boolean hasAdminRole = authentication.getAuthorities().stream().anyMatch(r -> ADMIN_ROLE.equals(r.getAuthority()));
         if (hasUserRole) {
             if (!loggedUser.getId().equals(id)) {
                 throw new AccessDeniedException("You are not allowed to update this user");

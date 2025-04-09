@@ -29,20 +29,24 @@
     <properties>
         <java.version>21</java.version>
 
-        <flyway.version>11.6.0</flyway.version>
+        <flyway.version>11.7.0</flyway.version>
         <liquibase.version>4.31.1</liquibase.version>
+        <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.6</springdoc-openapi-starter-webmvc-ui.version>
 
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <checkstyle.version>10.12.0</checkstyle.version>
+        <checkstyle.version>10.23.0</checkstyle.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+        <maven-pmd-plugin.version>3.25.0</maven-pmd-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <spotbugs.version>4.9.3</spotbugs.version>
+        <spotbugs-maven-plugin.version>4.9.3.0</spotbugs-maven-plugin.version>
 
-        <checkstyle.config.location>code-check/checkstyle.xml</checkstyle.config.location>
-        <checkstyle.suppressions.location>code-check/checkstyle-suppressions.xml</checkstyle.suppressions.location>
-        <checkstyle.excludes>**/generated/**/*</checkstyle.excludes>
-        <checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
-        <checkstyle.includeTestResources>true</checkstyle.includeTestResources>
+        <code-style.dir>${project.basedir}/code-check</code-style.dir>
+        <checkstyle.config.location>${code-style.dir}/checkstyle/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.suppressions.location>${code-style.dir}/checkstyle/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+        <spotbugs.excludeFilterFile>${code-style.dir}/spotbugs/spotbugs-exclude.xml</spotbugs.excludeFilterFile>
     </properties>
     <dependencies>
         <dependency>
@@ -94,6 +98,28 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!--        Swagger -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+        </dependency>
+
+        <!--         Logging -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
         </dependency>
     </dependencies>
 
@@ -197,6 +223,45 @@
                         <include>cz/sinko/morosystems/service/impl/**</include>
                         <include>cz/sinko/morosystems/facade/impl/**</include>
                     </includes>
+                </configuration>
+            </plugin>
+
+            <!-- Bugs detection -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <excludeFilterFile>${spotbugs.excludeFilterFile}</excludeFilterFile>
+                    <htmlOutput>true</htmlOutput>
+                </configuration>
+            </plugin>
+
+            <!-- Bugs detection -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <configuration>
+                    <targetJdk>${java.version}</targetJdk>
+                    <includeTests>false</includeTests>
+                    <rulesets>
+                        <ruleset>rulesets/java/quickstart.xml</ruleset>
+                    </rulesets>
+                    <excludes>
+                        <exclude>**/generated/*.java</exclude>
+                    </excludes>
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources/annotations</excludeRoot>
+                        <excludeRoot>target/generated-test-sources/test-annotations</excludeRoot>
+                    </excludeRoots>
                 </configuration>
             </plugin>
         </plugins>

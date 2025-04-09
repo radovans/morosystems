@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Radovan Šinko
  */
+@SuppressWarnings("PMD") // HttpHeaders implements java.util.Map and thus suggests to use Map instead
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -60,7 +61,9 @@ public class GlobalExceptionHandler {
     public final ResponseEntity<ApiError> handleException(final Exception ex, final WebRequest request) {
         final HttpHeaders headers = new HttpHeaders();
 
-        log.error("Handling {} due to {}", ex.getClass().getSimpleName(), ex.getMessage());
+        if (log.isErrorEnabled()) {
+            log.error("Handling {} due to {}", ex.getClass().getSimpleName(), ex.getMessage());
+        }
 
         if (ex instanceof ResourceNotFoundException exception) {
             final HttpStatus status = HttpStatus.NOT_FOUND;
