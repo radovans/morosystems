@@ -1,6 +1,7 @@
 package cz.sinko.morosystems.api.controller;
 
 import static cz.sinko.morosystems.api.ApiUris.ROOT_URI_USERS;
+import static net.logstash.logback.marker.Markers.append;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cz.sinko.morosystems.api.controller.mapper.UserApiMapper;
-import cz.sinko.morosystems.api.controller.request.UserCreateRequest;
-import cz.sinko.morosystems.api.controller.request.UserUpdateRequest;
-import cz.sinko.morosystems.api.controller.response.UserResponse;
+import cz.sinko.morosystems.api.mapper.UserApiMapper;
+import cz.sinko.morosystems.api.dto.request.user.UserCreateRequest;
+import cz.sinko.morosystems.api.dto.request.user.UserUpdateRequest;
+import cz.sinko.morosystems.api.dto.response.user.UserResponse;
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
 import cz.sinko.morosystems.facade.UserFacade;
 import cz.sinko.morosystems.repository.model.User;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
     private final UserFacade userFacade;
+
     private final UserApiMapper userApiMapper;
 
     /**
@@ -53,7 +55,7 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable final long id) throws ResourceNotFoundException {
-        log.info("Getting user with id: '{}'", id);
+        log.info("Call getUser with id '{}'", id);
         return ResponseEntity.ok(userApiMapper.toResponse(userFacade.getUser(id)));
     }
 
@@ -64,7 +66,7 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers() {
-        log.info("Getting all users");
+        log.info("Call getUsers");
         return ResponseEntity.ok().body(userApiMapper.toResponse(userFacade.getUsers()));
     }
 
@@ -76,7 +78,7 @@ public class UserController {
      */
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid final UserCreateRequest userCreateRequest) {
-        log.info("Creating new user: '{}'", userCreateRequest);
+        log.info(append("userCreateRequest", userCreateRequest), "Call createUser with request '{}'", userCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(userApiMapper.toResponse(userFacade.createUser(userApiMapper.fromRequest(userCreateRequest))));
     }
 
@@ -91,7 +93,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final User loggedUser, @PathVariable final long id) throws ResourceNotFoundException {
-        log.info("Deleting user with id: '{}'", id);
+        log.info("Call deleteUser with id '{}'", id);
         userFacade.deleteUser(id);
         return ResponseEntity.ok().build();
     }
@@ -110,7 +112,7 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(@AuthenticationPrincipal final User loggedUser, @PathVariable final long id,
             @RequestBody @Valid final UserUpdateRequest userUpdateRequest)
             throws ResourceNotFoundException {
-        log.info("Updating user with id: '{}', '{}'", id, userUpdateRequest);
+        log.info(append("userUpdateRequest", userUpdateRequest), "Call updateUser with id '{}' and request '{}'", id, userUpdateRequest);
         return ResponseEntity.ok().body(userApiMapper.toResponse(userFacade.updateUser(loggedUser, id,
                 userApiMapper.fromRequest(userUpdateRequest))));
     }

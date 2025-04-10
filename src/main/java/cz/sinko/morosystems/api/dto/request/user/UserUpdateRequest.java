@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.api.controller.request;
+package cz.sinko.morosystems.api.dto.request.user;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

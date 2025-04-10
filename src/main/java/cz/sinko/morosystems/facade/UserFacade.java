@@ -3,7 +3,7 @@ package cz.sinko.morosystems.facade;
 import java.util.List;
 
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
-import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.service.dto.UserDto;
 import cz.sinko.morosystems.repository.model.User;
 
 /**

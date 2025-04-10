@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.api.controller.mapper;
+package cz.sinko.morosystems.api.mapper;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-import cz.sinko.morosystems.api.controller.request.UserCreateRequest;
-import cz.sinko.morosystems.api.controller.request.UserUpdateRequest;
-import cz.sinko.morosystems.api.controller.response.UserResponse;
-import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.api.dto.request.user.UserCreateRequest;
+import cz.sinko.morosystems.api.dto.request.user.UserUpdateRequest;
+import cz.sinko.morosystems.api.dto.response.user.UserResponse;
+import cz.sinko.morosystems.service.dto.UserDto;
 
 
 /**

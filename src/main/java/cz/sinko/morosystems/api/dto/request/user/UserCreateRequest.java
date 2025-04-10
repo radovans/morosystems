@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.api.controller.request;
+package cz.sinko.morosystems.api.dto.request.user;
 
 import cz.sinko.morosystems.configuration.validator.UniqueUsername;
 import jakarta.validation.constraints.NotBlank;

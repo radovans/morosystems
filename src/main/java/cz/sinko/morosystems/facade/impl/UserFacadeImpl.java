@@ -9,17 +9,15 @@ import java.util.Set;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
 import cz.sinko.morosystems.facade.UserFacade;
-import cz.sinko.morosystems.facade.dto.UserDto;
 import cz.sinko.morosystems.repository.model.Role;
 import cz.sinko.morosystems.repository.model.User;
 import cz.sinko.morosystems.service.RoleService;
 import cz.sinko.morosystems.service.UserService;
+import cz.sinko.morosystems.service.dto.UserDto;
 import cz.sinko.morosystems.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,9 +81,8 @@ public class UserFacadeImpl implements UserFacade {
     public UserDto updateUser(final User loggedUser, final long id, final UserDto userDto) throws ResourceNotFoundException {
         log.info("Updating user with id: '{}', '{}'", id, userDto);
 
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final boolean hasUserRole = authentication.getAuthorities().stream().anyMatch(r -> USER_ROLE.equals(r.getAuthority()));
-        final boolean hasAdminRole = authentication.getAuthorities().stream().anyMatch(r -> ADMIN_ROLE.equals(r.getAuthority()));
+        final boolean hasUserRole = loggedUser.getAuthorities().stream().anyMatch(r -> USER_ROLE.equals(r.getAuthority()));
+        final boolean hasAdminRole = loggedUser.getAuthorities().stream().anyMatch(r -> ADMIN_ROLE.equals(r.getAuthority()));
         if (hasUserRole) {
             if (!loggedUser.getId().equals(id)) {
                 throw new AccessDeniedException("You are not allowed to update this user");

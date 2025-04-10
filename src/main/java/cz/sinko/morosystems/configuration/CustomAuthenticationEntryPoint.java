@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.api;
+package cz.sinko.morosystems.configuration;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -9,6 +9,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.sinko.morosystems.api.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

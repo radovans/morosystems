@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.facade.dto;
+package cz.sinko.morosystems.service.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

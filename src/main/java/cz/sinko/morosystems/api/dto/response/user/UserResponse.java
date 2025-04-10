@@ -1,4 +1,4 @@
-package cz.sinko.morosystems.api.controller.response;
+package cz.sinko.morosystems.api.dto.response.user;
 
 import lombok.Builder;
 import lombok.Data;

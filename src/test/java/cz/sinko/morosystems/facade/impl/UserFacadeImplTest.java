@@ -29,7 +29,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import cz.sinko.morosystems.configuration.exception.ResourceNotFoundException;
-import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.service.dto.UserDto;
 import cz.sinko.morosystems.repository.model.Role;
 import cz.sinko.morosystems.repository.model.User;
 import cz.sinko.morosystems.service.RoleService;

@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import cz.sinko.morosystems.facade.dto.UserDto;
+import cz.sinko.morosystems.service.dto.UserDto;
 import cz.sinko.morosystems.repository.model.Role;
 import cz.sinko.morosystems.repository.model.User;
 
